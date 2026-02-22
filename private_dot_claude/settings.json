@@ -1,5 +1,7 @@
 {
-  "env": {},
+  "env": {
+    "PAGER": ""
+  },
   "permissions": {
     "allow": [
       "Bash(npm run lint)",
