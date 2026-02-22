@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ $# -ne 1 ] || ! [[ $1 =~ ^[0-9]+$ ]] || [ $1 -lt 0 ] || [ $1 -gt 100 ]; then
+  echo "Usage: $0 <volume-level> (0-100)"
+  exit 1
+fi
+
+osascript -e "set volume output volume $1"
