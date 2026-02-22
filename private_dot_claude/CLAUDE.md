@@ -14,6 +14,7 @@ parsing and classification logic, then query that.
 
 ## Shell commands
 - Don't use `git -C`, `npm --prefix`, or similar working-directory flags when already in the correct directory. They bypass allow-listed command patterns.
+- When suggesting Bash permissions, use spaces, not colons: `Bash(ls *)` not `Bash(ls:*)`.
 
 ## Auto-approvals
 - Bash(pnpm install)
