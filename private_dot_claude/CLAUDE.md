@@ -14,6 +14,7 @@ parsing and classification logic, then query that.
 
 ## Shell commands
 - Don't use `git -C`, `npm --prefix`, or similar working-directory flags when already in the correct directory. They bypass allow-listed command patterns.
+- Don't `cd` into the working directory before running commands — you're already there. Prefixing with `cd` breaks allow-listed patterns just like `-C` does.
 - When suggesting Bash permissions, use spaces, not colons: `Bash(ls *)` not `Bash(ls:*)`.
 
 ## Auto-approvals

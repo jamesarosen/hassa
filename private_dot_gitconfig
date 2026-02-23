@@ -11,9 +11,9 @@
 	dc = diff --cached
 	delete-remote = "!sh -c ' git push origin :$1' -"
 	fc = "!sh -c 'git rev-parse $1 | tee | pbcopy' -"
-	lastweeklog = "log --since='two fridays ago at noon' --before='one friday ago' --author='james' origin/master"
+	lastweeklog = "log --since='two fridays ago at noon' --before='one friday ago' --author='james' origin/main"
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
-	pom = push origin master
+	pom = push origin main
 	ppl = "!sh -c 'git pull --rebase && git push && git log' -"
 	pr = pull --rebase
 	rc = rebase --continue
@@ -24,7 +24,7 @@
 	stat = status -s
 	track-remote = "!sh -c 'git branch --track $1 origin/$1' -"
 	tags = "!sh -c 'git tag | sort -t. --key=1,1n --key=2,2n --key=3,3n | tail'"
-	weeklog = "log --since='last friday at noon' --author='james' origin/master"
+	weeklog = "log --since='last friday at noon' --author='james' origin/main"
 	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
 	whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
 	wip = !sh -c 'git add -A && git commit --no-verify --message=\"${1:-wip}\"' -

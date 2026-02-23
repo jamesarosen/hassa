@@ -1,4 +1,4 @@
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$HOME/.turso:$HOME/.local/bin:$PATH"
 export PIHOLE_PASSWORD={{ onepasswordRead "op://Private/pihole/password" | quote }}
