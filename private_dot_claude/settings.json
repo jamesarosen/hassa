@@ -27,6 +27,7 @@
       "Bash(git add *)",
       "Bash(git branch *)",
       "Bash(git commit *)",
+      "Bash(git diff)",
       "Bash(git diff *)",
       "Bash(git log *)",
       "Bash(git reset --soft *)",
