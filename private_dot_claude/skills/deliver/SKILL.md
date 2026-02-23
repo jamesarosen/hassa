@@ -80,7 +80,7 @@ After reviewers complete, respond to each finding:
 | Response       | Meaning             | Action                                  |
 | -------------- | ------------------- | --------------------------------------- |
 | Will fix       | Agree               | Implement immediately                   |
-| Will fix later | Valid, not blocking | Use `/defer` to add to Now/Next/Later doc |
+| Will fix later | Valid, not blocking | Use `/defer` to create a GitHub Issue (pass `--next` for CRITICAL/HIGH findings, `--later` for MEDIUM/LOW) |
 | Won't fix      | Disagree            | Explain why                             |
 | Discuss        | Need user input     | **Stop and ask**                        |
 
