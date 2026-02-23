@@ -16,6 +16,7 @@ parsing and classification logic, then query that.
 - Don't use `git -C`, `npm --prefix`, or similar working-directory flags when already in the correct directory. They bypass allow-listed command patterns.
 - Don't `cd` into the working directory before running commands — you're already there. Prefixing with `cd` breaks allow-listed patterns just like `-C` does.
 - When suggesting Bash permissions, use spaces, not colons: `Bash(ls *)` not `Bash(ls:*)`.
+- Prefer `echo "==="` over `echo "---"` as a separator in chained commands. Quoted dashes trigger a false-positive permission prompt ([anthropics/claude-code#16946](https://github.com/anthropics/claude-code/issues/16946)).
 
 ## Auto-approvals
 - Bash(pnpm install)
