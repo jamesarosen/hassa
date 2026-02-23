@@ -6,6 +6,7 @@
     "allow": [
       "Bash(duckdb *)",
       "Bash(gh browse*)",
+      "Bash(gh issue create*)",
       "Bash(gh issue list*)",
       "Bash(gh issue status*)",
       "Bash(gh issue view *)",
