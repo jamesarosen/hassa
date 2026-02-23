@@ -1,7 +1,7 @@
 ---
 name: git-commit-message
 description: This skill should be used when the user asks to "write a commit message", "draft the commit message", "compose the commit", "/git-commit-message", or wants a rich commit message generated for staged changes.
-version: 1.1.0
+version: 1.2.0
 ---
 
 # Git Commit Message
@@ -19,7 +19,11 @@ Generate a structured commit message for staged changes. This skill delegates to
 Before launching the sub-agent, gather context from the current conversation that the sub-agent will need:
 
 1. **Review findings** — scan the conversation for `/review` output since the last commit. Extract the list of findings with their severities and dispositions (addressed, rebutted, deferred). If there are no review findings, note "none."
-2. **Conversation summary** — note: what the user asked for, key decisions or discoveries, the number of user messages since the last commit, and the number of times the user was explicitly asked to approve or reject a tool call (do not count auto-approved calls or policy blocks).
+2. **Conversation summary** — note: what the user asked for, key decisions or discoveries, the number of user messages since the last commit, and the number of **permission prompts**. A permission prompt is any point where the user had to respond before work could continue. Count both sources:
+   - **Tool-call approvals** — the system-level approve/deny dialogs shown when a tool call is not auto-approved. Each dialog the user answered (whether they approved or denied) counts as one prompt. Do not count auto-approved calls or policy blocks.
+   - **AskUserQuestion invocations** — explicit questions you asked the user via the AskUserQuestion tool.
+
+   Report the total with a `~` prefix (e.g., "Permission prompts: ~52").
 
 These will be passed to the sub-agent as `REVIEW_CONTEXT` and `CONVERSATION_CONTEXT` in the prompt below.
 
@@ -178,7 +182,7 @@ then back to renamed items. chezmoi diff hangs when PAGER is set. Full
 overly broad Claude Code allow-list, and several files that shouldn't go
 public.
 
-Turns: ~40 | Duration: ~2.5 hours
+Turns: ~40 | Permission prompts: ~52
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
