@@ -84,6 +84,9 @@
 	default = current
 	autoSetupRemote = true
 
+[rebase]
+	autoSquash = true
+
 [sequence]
 	editor = vim
 
