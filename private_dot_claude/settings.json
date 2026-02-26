@@ -38,6 +38,8 @@
       "Bash(git status)",
       "Bash(npm run lint)",
       "Bash(npm run test:*)",
+      "Bash(pseudo-pr)",
+      "Bash(pseudo-pr *)",
       "Bash(sqlite3 *)",
       "mcp__context7__get-library-docs",
       "mcp__context7__resolve-library-id",
