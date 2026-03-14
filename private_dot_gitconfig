@@ -2,6 +2,7 @@
 	add-aw = "!git diff -w --no-color | git apply --cached --ignore-whitespace"
 	amend = commit --amend
 	branchname = "!f() { git rev-parse --abbrev-ref HEAD | tr -d '\\n'; }; f"
+	bm = branch-memo
 	brm = "branch -d"
 	ci = commit
 	cm = checkout main
