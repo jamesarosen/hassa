@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# git-branch-memo: attach a human-readable note to the current branch
+#
+# Usage:
+#   git branch-memo [<message>]
+#   git bm [<message>]
+#
+# With no arguments, displays existing memos and prompts for a message.
+# With a message argument, creates the memo immediately.
+#
+# Memos are empty commits with a "memo:" prefix, making them:
+#   - visible in: git log --oneline
+#   - filterable: git log --oneline --grep="^memo:"
+#   - rebase-safe (preserve them with `pick` during interactive rebase)
+
+set -euo pipefail
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+if [[ -t 1 ]]; then
+  BOLD='\033[1m' DIM='\033[2m' NC='\033[0m'
+else
+  BOLD='' DIM='' NC=''
+fi
+
+info()  { printf "${BOLD}%s${NC}\n" "$*"; }
+dim()   { printf "${DIM}%s${NC}\n" "$*"; }
+error() { printf 'error: %s\n' "$*" >&2; exit 1; }
+
+# ── Preflight ─────────────────────────────────────────────────────────────────
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null) \
+  || error "not inside a git repository"
+[[ "$branch" == "HEAD" ]] && error "detached HEAD — check out a branch first"
+
+# Refuse to write memo when there are staged changes (they'd be included or
+# the empty-commit would conflict with the index state).
+if ! git diff --cached --quiet; then
+  error "cannot write memo when there are staged changes — commit or reset them first"
+fi
+
+# ── Show existing memos ───────────────────────────────────────────────────────
+existing=$(git log --oneline --grep="^memo:" "$(git merge-base HEAD origin/main 2>/dev/null || git rev-parse HEAD)"..HEAD 2>/dev/null || true)
+if [[ -n "$existing" ]]; then
+  info "Existing memos on ${branch}:"
+  while IFS= read -r line; do
+    dim "  $line"
+  done <<< "$existing"
+  printf '\n'
+fi
+
+# ── Get the message ───────────────────────────────────────────────────────────
+# $@ is the message passed from the caller (Claude Code strips "branch-memo"
+# before forwarding args when invoked as `git branch-memo <msg>`).
+if [[ $# -gt 0 ]]; then
+  message="$*"
+else
+  printf 'Memo message: '
+  IFS= read -r message
+fi
+
+[[ -z "$message" ]] && error "memo message cannot be empty"
+
+# Strip a leading "memo:" if the caller already included it, then re-add it
+# so the prefix is always exactly "memo: " (one space, consistent grep target).
+message="${message#memo:}"
+message="${message#memo: }"
+message="memo: ${message# }"  # trim any leading space left after stripping
+
+# ── Create the empty commit ───────────────────────────────────────────────────
+git commit --allow-empty -m "$message"
+
+printf '\n'
+info "Memo recorded on ${branch}:"
+git log --oneline -1
