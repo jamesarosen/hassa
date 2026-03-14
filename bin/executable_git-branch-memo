@@ -63,10 +63,35 @@ fi
 # so the prefix is always exactly "memo: " (one space, consistent grep target).
 message="${message#memo:}"
 message="${message#memo: }"
-message="memo: ${message# }"  # trim any leading space left after stripping
+message="${message# }"  # trim any leading space left after stripping
+
+# ── Word-wrap ─────────────────────────────────────────────────────────────────
+# Subject line (incl. "memo: " prefix): ≤ 50 chars.
+# Body continuation lines: ≤ 72 chars.
+# Long tokens (e.g. URLs) are never broken mid-word.
+_wrap_memo() {
+  local text="$1" max=50 line="" first=1 out=""
+  local -a words
+  read -ra words <<< "memo: ${text}"
+  for word in "${words[@]}"; do
+    if [[ -z "$line" ]]; then
+      line="$word"
+    elif (( ${#line} + 1 + ${#word} <= max )); then
+      line+=" $word"
+    else
+      out+="${line}"$'\n'
+      if (( first )); then out+=$'\n'; first=0; max=72; fi
+      line="$word"
+    fi
+  done
+  [[ -n "$line" ]] && out+="${line}"
+  printf '%s' "$out"
+}
+
+formatted=$(_wrap_memo "$message")
 
 # ── Create the empty commit ───────────────────────────────────────────────────
-git commit --allow-empty -m "$message"
+git commit --allow-empty -m "$formatted"
 
 printf '\n'
 info "Memo recorded on ${branch}:"
