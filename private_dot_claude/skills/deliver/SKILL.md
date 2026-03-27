@@ -1,7 +1,7 @@
 ---
 name: deliver
 description: This skill should be used when the user asks to "deliver this", "implement and PR", "build this feature", "fix this bug and open a PR", "/deliver", or wants autonomous end-to-end implementation from understanding through pull request.
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Deliver
@@ -77,22 +77,28 @@ Invoke the `/review` skill to review the changes before committing. The `/review
 
 After reviewers complete, respond to each finding:
 
-| Response       | Meaning             | Action                                  |
-| -------------- | ------------------- | --------------------------------------- |
-| Will fix       | Agree               | Implement immediately                   |
-| Will fix later | Valid, not blocking | Use `/defer` to create a GitHub Issue (pass `--next` for CRITICAL/HIGH findings, `--later` for MEDIUM/LOW) |
-| Won't fix      | Disagree            | Explain why                             |
-| Discuss        | Need user input     | **Stop and ask**                        |
+| Response       | Meaning             | Action                                    | Triggers re-review? |
+| -------------- | ------------------- | ----------------------------------------- | ------------------- |
+| Will fix       | Agree               | Implement immediately                     | Yes                 |
+| Will fix later | Valid, not blocking | Use `/defer` (see priority note below)    | No                  |
+| Won't fix      | Disagree            | Explain why                               | No                  |
+| Discuss        | Need user input     | **Stop and ask**                          | N/A                 |
+
+> **`/defer` priority:** Pass `--now`, `--next`, or `--later` based on urgency. Do not triage a CRITICAL finding as Won't fix or Will fix later without explicit user confirmation.
 
 ### Iterate
 
-After fixing review findings, re-review **unless all of these are true:**
+After triaging and addressing review findings, decide whether to run another review cycle. **Maximum 3 review rounds.** Log the round before each cycle:
 
-- Fixes were purely cosmetic (typos, formatting)
-- No CRITICAL or HIGH issues in round 1
-- Already completed round 2
+> Review cycle 2 of 3
 
-**Maximum 2 review rounds.** After round 2, commit and note "further review recommended" if issues remain.
+Evaluate in this order:
+
+1. **Any Will fix responses?** Implement those fixes. If not at the cap, run the next review cycle. If at the cap, go to step 3.
+2. **No code changes this round?** Every finding was Won't fix, Will fix later, or Discuss — another review cycle adds no value. Proceed to the Quality Gate.
+3. **At the cap with unverified fixes?** If any CRITICAL or HIGH finding was triaged Will fix in the most recent round (meaning no subsequent review has verified the fix), stop and ask the user before committing. Otherwise, proceed to the Quality Gate. Note "further review recommended" in the PR if issues remain.
+
+Any CRITICAL or HIGH finding triaged as Won't fix or Will fix later must be explicitly called out in the PR's Review Notes section, with rationale.
 
 ### Quality Gate
 
@@ -136,7 +142,8 @@ gh pr create --title "type(scope): short description" --body "$(cat <<'EOF'
 ## Review Notes
 
 Self-reviewed via deliver skill.
-[Note any unresolved findings or follow-ups here]
+[Required if any exist: list CRITICAL or HIGH findings triaged as Won't fix or Will fix later, with rationale and /defer issue links.]
+[Note any other unresolved findings or follow-ups here]
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 EOF
