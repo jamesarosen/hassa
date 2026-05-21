@@ -53,6 +53,17 @@
     "deny": ["Read(./.env)", "Read(./.env.*)"]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Task|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/require-agent-model.py"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
