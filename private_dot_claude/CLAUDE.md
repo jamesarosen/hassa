@@ -25,10 +25,12 @@ parsing and classification logic, then query that.
 
 `/factory [issue-number]` runs a full implementation pipeline on any repo:
 
-1. **Plan** — haiku planner agent reads the GitHub issue, discovers test/lint commands, writes `FACTORY_PLAN.md` and `FACTORY_TASKS.md`
-2. **Implement** — sonnet implementer agent works through each task, runs tests after each one, marks tasks complete
-3. **Review** — architect, user-advocate, and standards agents review in parallel
-4. **PR** — pushes the branch and opens a PR for human review (never auto-merges)
+1. **Plan** — opus planner agent reads the GitHub issue, discovers test/lint commands, writes `FACTORY_PLAN.md` and `FACTORY_TASKS.md`
+2. **Implement** — sonnet implementer agent works through each task, runs tests after each one, marks tasks complete; implementation is committed before review
+3. **Review** — architect, user-advocate, and standards agents review in parallel against the commit
+4. **PR** — if no critical findings, pushes the branch and opens a PR (never auto-merges); if critical findings exist, posts a comment on the GitHub issue and exits async
+
+If the factory exits due to critical findings, respond to the issue comment, then run `/factory-resume [issue-number]` to push and open the PR.
 
 Artifact files (`FACTORY_PLAN.md`, `FACTORY_TASKS.md`, `FACTORY_REVIEW.md`) are written to the project root and cleaned up after the PR is created. `FACTORY_BLOCKERS.md` is left in place on failure so you can diagnose what went wrong.
 

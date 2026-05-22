@@ -12,7 +12,7 @@ Run a complete implementation cycle from a GitHub issue to a pull request ready 
 Run `gh issue list --state open --limit 20 --json number,title` and display the results. Use `AskUserQuestion` to ask which issue to work on. Use the chosen number as N.
 
 **If `$ARGUMENTS` is a number:**
-Run `gh issue view $ARGUMENTS --json number,title,body,labels` and display the title and body summary. Use `AskUserQuestion` to confirm: "Run /factory on issue #$ARGUMENTS: [title]? This creates a branch, implements the feature, runs code review, and opens a PR for your review." If the answer is no: stop.
+Run `gh issue view $ARGUMENTS --json number,title,body,labels` and display the title and body summary. Use `AskUserQuestion` to confirm: "Run /factory on issue #$ARGUMENTS: [title]? This creates a branch, implements the feature, runs code review, and opens a PR." If the answer is no: stop.
 
 Set N = the issue number. Hold the full issue body text for the planner.
 
@@ -40,7 +40,7 @@ Spawn the planner:
 
 ```
 Agent(
-  model: haiku,
+  model: opus,
   subagent_type: factory-planner,
   prompt: |
     Issue #N: [title]
@@ -53,7 +53,7 @@ Agent(
 
 After the agent completes, Read `FACTORY_PLAN.md` and `FACTORY_TASKS.md`.
 If either is missing or empty: display "Planner failed to produce required artifacts" and stop.
-Show the plan and task list to the user.
+Show the plan and task list.
 
 ---
 
@@ -70,8 +70,30 @@ Agent(
 ```
 
 After the agent completes, check whether `FACTORY_BLOCKERS.md` exists:
-- **If it exists**: Read and display its contents. Tell the user what the factory needs. Stop — do not clean up artifact files.
-- **If it does not exist**: continue to Phase 4.
+- **If it exists**: Read and display its contents. Tell the user what the factory is blocked on. Stop — do not clean up artifact files.
+- **If it does not exist**: continue.
+
+---
+
+## Phase 3.5 — Commit Implementation
+
+Stage and commit the implementation, excluding factory artifact files:
+
+```bash
+git add -- ':!FACTORY_PLAN.md' ':!FACTORY_TASKS.md' ':!FACTORY_REVIEW.md' ':!FACTORY_BLOCKERS.md'
+git status --short
+```
+
+Verify the staged files look correct. Then commit:
+
+```bash
+git commit -m "$(cat <<'EOF'
+feat: [issue title]
+
+Closes #N
+EOF
+)"
+```
 
 ---
 
@@ -80,9 +102,9 @@ After the agent completes, check whether `FACTORY_BLOCKERS.md` exists:
 In a single response, launch all three reviewer agents simultaneously (three Agent tool calls in one message):
 
 ```
-Agent(model: sonnet, subagent_type: architect,     prompt: "Review changes on this branch. Diff range: origin/main...HEAD")
-Agent(model: sonnet, subagent_type: user-advocate, prompt: "Review changes on this branch. Diff range: origin/main...HEAD")
-Agent(model: sonnet, subagent_type: standards,     prompt: "Review changes on this branch. Diff range: origin/main...HEAD")
+Agent(model: sonnet, subagent_type: architect,     prompt: "Review changes on this branch vs main. Diff range: origin/main...HEAD")
+Agent(model: sonnet, subagent_type: user-advocate, prompt: "Review changes on this branch vs main. Diff range: origin/main...HEAD")
+Agent(model: sonnet, subagent_type: standards,     prompt: "Review changes on this branch vs main. Diff range: origin/main...HEAD")
 ```
 
 Collect all three results.
@@ -106,47 +128,58 @@ Combine the three reviewer outputs into `FACTORY_REVIEW.md`:
 
 ## Decision: PROCEED
 ```
-(Or `Decision: NEEDS_ATTENTION: [reason]` if there are CRITICAL findings.)
+(Or `Decision: NEEDS_ATTENTION` if there are CRITICAL findings.)
 
-**If any CRITICAL finding exists**: display `FACTORY_REVIEW.md` and use `AskUserQuestion` to ask the user whether to proceed or stop. If they say stop: leave all artifact files in place and stop.
+**If any CRITICAL finding exists:**
 
----
-
-## Phase 6 — Commit, Push, Create PR
-
-Stage implementation work, explicitly excluding factory artifact files:
+Post a comment on the GitHub issue:
 
 ```bash
-git add -- ':!FACTORY_PLAN.md' ':!FACTORY_TASKS.md' ':!FACTORY_REVIEW.md' ':!FACTORY_BLOCKERS.md'
-git status --short
-```
+gh issue comment N --body "$(cat <<'EOF'
+## 🏭 Factory Review: Needs Your Input
 
-Verify the staged files look right (no artifact files, no unrelated changes). Then commit:
+Implementation is complete but the review found critical issues that need a decision before opening a PR.
 
-```bash
-git commit -m "$(cat <<'EOF'
-feat: [issue title]
+[list each CRITICAL finding with: what was found, why it matters, what decision is needed]
 
-Closes #N
+After responding here, run `/factory-resume N` in your Claude Code session to continue.
 EOF
 )"
 ```
 
-Push and open a PR:
+Then print: "Critical findings posted as a comment on issue #N. Run `/factory-resume N` after you've reviewed and responded."
+
+Stop. Leave all artifact files in place for debugging.
+
+**If no CRITICAL findings:**
+
+Amend the commit to include the review summary:
+
+```bash
+git commit --amend -m "$(cat <<'EOF'
+feat: [issue title]
+
+Closes #N
+
+Review: [one-line summary, e.g. "3 findings: 1 fixed (SVG→PNG conversion), 2 accepted (low risk)"]
+EOF
+)"
+```
+
+---
+
+## Phase 6 — Push and Create PR
 
 ```bash
 git push -u origin HEAD
 gh pr create \
   --title "[issue title]" \
-  --body "$(cat <<'EOF'
-[paste FACTORY_REVIEW.md contents here]
+  --body "$(cat FACTORY_REVIEW.md)
 
-Closes #N
-EOF
-)"
+Closes #N"
 ```
 
-Display the PR URL to the user.
+Display the PR URL.
 
 ---
 
