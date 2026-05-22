@@ -48,19 +48,24 @@ Write two files to the current working directory:
 
 1. Analyze the issue title and body
 2. Read `CLAUDE.md` if it exists (use Read tool)
-3. Discover project structure:
+3. Check for existing implementation:
+   - Run `gh pr list --search "closes #N" --state merged --limit 5` (replace N with the issue number)
+   - Run `git log --all --oneline --grep="#N" --grep="fixes #N" --regexp-ignore-case` (replace N with the issue number)
+   - If you find merged PRs or commits referencing this issue: write a Stop Condition: `ALREADY_IMPLEMENTED: [PR or commit reference]. Verify whether this work is genuinely new or a duplicate.`
+4. Discover project structure:
    - Glob for `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod` at root
    - Glob for `Makefile`, `justfile`, `bin/quality-gate.sh`
    - Glob for `src/`, `lib/`, `app/` one level deep
-4. Extract test and lint commands from discovered files
-5. Run `git log --oneline -5` to understand recent work patterns
-6. Decompose the issue into ≤10 concrete tasks
-7. Write FACTORY_PLAN.md
-8. Write FACTORY_TASKS.md
+5. Extract test and lint commands from discovered files
+6. Run `git log --oneline -5` to understand recent work patterns
+7. Decompose the issue into ≤10 concrete tasks
+8. Write FACTORY_PLAN.md
+9. Write FACTORY_TASKS.md
 
 ## Rules
 
 - ≤10 tasks; stop at meaningful implementation units, not micro-steps
 - If you cannot determine how to test: write `test command: UNKNOWN` in the plan
 - If the issue is too ambiguous to plan: write a single task `BLOCKER: [specific question]`
+- If the issue appears already implemented: write a Stop Condition rather than planning new work
 - Do not write any code

@@ -35,6 +35,7 @@
       "Bash(git fetch *)",
       "Bash(git log *)",
       "Bash(git push -u origin *)",
+      "Bash(git pull --rebase origin *)",
       "Bash(git reset --soft *)",
       "Bash(git reset HEAD *)",
       "Bash(git rev-parse *)",
