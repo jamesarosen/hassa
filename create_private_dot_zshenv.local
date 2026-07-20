@@ -1,0 +1,6 @@
+# Machine-specific zsh env for this host — NOT tracked by chezmoi.
+# chezmoi wrote this stub only because ~/.zshenv.local did not exist.
+# Sourced at the end of ~/.zshenv, so it can extend/override $PATH, add functions, etc.
+
+# export PATH="$HOME/work/bin:$PATH"
+# work-vpn() { ... }
