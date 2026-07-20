@@ -1,0 +1,6 @@
+# Machine-specific git config for this host — NOT tracked by chezmoi.
+# chezmoi wrote this stub only because ~/.gitconfig.local did not exist.
+# Included last by ~/.gitconfig, so anything here overrides the defaults.
+[user]
+	# email = you@work.example        # override the personal default on work machines
+	# signingkey = 0000000000000000    # this machine's signing key (needed: commit.gpgsign = true)
