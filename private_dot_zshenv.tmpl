@@ -1,9 +1,21 @@
 if [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$HOME/.turso:$HOME/.local/bin:$PATH"
+
+# Core PATH additions (Node comes from nvm below; Volta is opt-in)
+export PATH="$HOME/.turso:$HOME/.local/bin:$PATH"
+
+# Volta (opt-in; unmaintained — https://github.com/volta-cli/volta). Prefer nvm.
+if [ -s "$HOME/.volta/bin/volta" ]; then
+  export VOLTA_HOME="$HOME/.volta"
+  export PATH="$VOLTA_HOME/bin:$PATH"
+fi
+
+# Node via nvm — must live in .zshenv so non-interactive shells (agents, CI helpers) get `node`.
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
 export PIHOLE_PASSWORD={{ onepasswordRead "op://Private/pihole/password" | quote }}
 
-# pnpm
+# pnpm (requires Node from nvm/volta above)
 export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;

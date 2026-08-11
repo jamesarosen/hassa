@@ -1,6 +1,30 @@
 # Machine-specific zsh env for this host — NOT tracked by chezmoi.
 # chezmoi wrote this stub only because ~/.zshenv.local did not exist.
 # Sourced at the end of ~/.zshenv, so it can extend/override $PATH, add functions, etc.
+#
+# Note: nvm + default Node are already loaded from the tracked ~/.zshenv.
+# Only add machine-local Node overrides here if you intentionally diverge.
 
 # export PATH="$HOME/work/bin:$PATH"
 # work-vpn() { ... }
+
+# --- Colony local dev (uncomment on work machines) ---
+# Node 22 is maintenance LTS; personal default is Node ≥24 via nvm in ~/.zshenv.
+# Colony repos typically pin 22 via .nvmrc — `nvm use` after cd, or:
+#   nvm install 22
+#   # optional: leave default at 24; use 22 only in Colony dirs
+#
+# export PATH="/opt/homebrew/opt/libpq/bin:$PATH"   # pg_config for psycopg
+#
+# export PYENV_ROOT="$HOME/.pyenv"
+# command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+# eval "$(pyenv init -)"
+# # Prefer the venv's certifi when present; else a pyenv-installed copy:
+# # export SSL_CERT_FILE="$(python -m certifi)"
+# # export SSL_CERT_FILE="$PYENV_ROOT/versions/3.11.9/lib/python3.11/site-packages/certifi/cacert.pem"
+#
+# # Only if you keep nvm machine-local instead of the tracked ~/.zshenv block:
+# # export NVM_DIR="$HOME/.nvm"
+# # [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+# # [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+# --- End Colony local dev ---
