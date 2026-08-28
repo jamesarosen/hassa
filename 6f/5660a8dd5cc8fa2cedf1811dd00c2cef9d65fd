@@ -1,0 +1,20 @@
+private_dot_claude/hooks/executable_require-agent-model.py
+  s_7e91d13529c400::t_235b99cdeac782 12-14,16-17,23,25-26,30-31,43,48,51,56-57,79-96,98-108,134-141
+  s_7e91d13529c400::t_f88c66cb5f78de 5-11,15,18-22,24,27-29,34-35,37,41-42,44-47,49-50,52-55,58,75-78,97,109-117,133,144,146-147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6f5660a8dd5cc8fa2cedf1811dd00c2cef9d65fd",
+  "prompts": {},
+  "sessions": {
+    "s_7e91d13529c400": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2841997e-6aed-4526-afb2-4707859c6bd7",
+        "model": "grok-4.6"
+      },
+      "human_author": "James A Rosen <gh@jamesarosen.com>"
+    }
+  }
+}
