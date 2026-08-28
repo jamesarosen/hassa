@@ -1,0 +1,19 @@
+private_dot_gitignore
+  s_7e91d13529c400::t_e5be7af1996159 8-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "4715de5949cb7d2abf2ef83b6f62febc3aa40552",
+  "prompts": {},
+  "sessions": {
+    "s_7e91d13529c400": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2841997e-6aed-4526-afb2-4707859c6bd7",
+        "model": "grok-4.6"
+      },
+      "human_author": "James A Rosen <gh@jamesarosen.com>"
+    }
+  }
+}
