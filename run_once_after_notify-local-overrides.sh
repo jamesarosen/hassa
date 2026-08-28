@@ -14,12 +14,13 @@ Node / pnpm:
   - Volta is unmaintained (https://github.com/volta-cli/volta). It is only
     added to PATH when ~/.volta/bin/volta exists (opt-in). Prefer nvm.
 
-Apply must succeed end-to-end:
-  - Secrets in ~/.zshenv come from 1Password (`op`). If apply fails mid-way
-    (missing OP_ACCOUNT, not signed in, etc.), the applied ~/.zshenv can drift
-    from source — e.g. losing the `source ~/.zshenv.local` line — and agents
-    will not see machine-local PATH/nvm overrides.
-  - Fix with: eval $(op signin)  # or set OP_ACCOUNT, then: chezmoi apply
+Apply / source notes:
+  - `chezmoi apply` reads ~/.local/share/chezmoi (its own clone), not an
+    arbitrary workspace checkout — push/pull or sync before expecting new
+    commits to apply.
+  - Keep secrets (e.g. PIHOLE_PASSWORD) in ~/.zshenv.local, not tracked
+    ~/.zshenv, so a failed `op` lookup cannot block Node/PATH from applying.
+  - Fix op with: eval $(op signin)  # or set OP_ACCOUNT, then: chezmoi apply
 
 Stubs were created only where the file was missing — edit them as needed.
 EOF

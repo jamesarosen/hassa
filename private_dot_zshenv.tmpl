@@ -13,7 +13,8 @@ fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-export PIHOLE_PASSWORD={{ onepasswordRead "op://Private/pihole/password" | quote }}
+# Secrets (e.g. PIHOLE_PASSWORD) live in ~/.zshenv.local — keep them out of this
+# template so a failed `op` lookup cannot block Node/PATH from applying.
 
 # pnpm (requires Node from nvm/volta above)
 export PNPM_HOME="$HOME/Library/pnpm"

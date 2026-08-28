@@ -13,12 +13,14 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jamesarosen/hassa
 chezmoi init --apply jamesarosen/hassa
 ```
 
-Secrets are stored in 1Password and resolved at apply-time via the `op` CLI.
-You'll need [1Password CLI](https://developer.1password.com/docs/cli/) installed
-and authenticated (`op signin` / `OP_ACCOUNT`). **`chezmoi apply` must succeed
-end-to-end** — a failed secret lookup can leave `~/.zshenv` partially applied
-(e.g. missing the `source ~/.zshenv.local` line), which breaks Node/PATH for
-non-interactive shells and agents.
+Secrets that need 1Password belong in `~/.zshenv.local` (or another local
+override), not in tracked `~/.zshenv`. A failed `op` lookup must not block
+Node/PATH from applying. Authenticate with `op signin` / `OP_ACCOUNT` when you
+do resolve secrets locally.
+
+**Source dir:** `chezmoi apply` uses `~/.local/share/chezmoi`, which is a
+separate clone from any workspace checkout. Push/pull (or sync files) before
+expecting apply to see local commits.
 
 ## What's managed
 

@@ -8,6 +8,10 @@
 # export PATH="$HOME/work/bin:$PATH"
 # work-vpn() { ... }
 
+# Secrets that used to live in tracked ~/.zshenv (keep here so `op` failures
+# cannot block chezmoi from applying Node/PATH):
+# export PIHOLE_PASSWORD="$(op read 'op://Private/pihole/password')"
+
 # --- Colony local dev (uncomment on work machines) ---
 # Node 22 is maintenance LTS; personal default is Node ≥24 via nvm in ~/.zshenv.
 # Colony repos typically pin 22 via .nvmrc — `nvm use` after cd, or:
