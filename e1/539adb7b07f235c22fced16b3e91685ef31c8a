@@ -1,0 +1,25 @@
+private_dot_zshenv.tmpl
+  s_13e939e9ac4f84::t_60de8d6ecdb105 16-17
+create_private_dot_zshenv.local
+  s_13e939e9ac4f84::t_159d1effec587f 11-14
+README.md
+  s_13e939e9ac4f84::t_c0fd7f7a814f80 16-23
+run_once_after_notify-local-overrides.sh
+  s_13e939e9ac4f84::t_28ad34944ee73a 17-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e1539adb7b07f235c22fced16b3e91685ef31c8a",
+  "prompts": {},
+  "sessions": {
+    "s_13e939e9ac4f84": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f09f71e5-e8e2-4929-8550-0999e953c902",
+        "model": "grok-4.5"
+      },
+      "human_author": "James A Rosen <gh@jamesarosen.com>"
+    }
+  }
+}
