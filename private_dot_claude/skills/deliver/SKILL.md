@@ -1,7 +1,7 @@
 ---
 name: deliver
 description: This skill should be used when the user asks to "deliver this", "implement and PR", "build this feature", "fix this bug and open a PR", "/deliver", or wants autonomous end-to-end implementation from understanding through pull request.
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Deliver
@@ -105,26 +105,16 @@ Before committing, run the project's quality checks so issues are caught before 
 
 ### Commit
 
-```bash
-git add [specific files]
-git commit -m "$(cat <<'EOF'
-type(scope): short description
-
-Longer description if needed.
-
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
-EOF
-)"
-```
-
-Use conventional commit format: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`.
+Stage specific files with `git add`, then follow the `/git-commit-message` skill to generate and create the commit. When gathering context for Step 1, use the review findings and conversation summary from this session. Since `/deliver` operates autonomously, auto-accept the generated message — skip the "Yes / Revise / Regenerate" prompt in `/git-commit-message` Step 3.
 
 ### Push and PR
+
+Use `git log -1 --format='%s'` to retrieve the committed subject line for the PR title.
 
 ```bash
 git push -u origin HEAD
 
-gh pr create --title "type(scope): short description" --body "$(cat <<'EOF'
+gh pr create --title "$(git log -1 --format='%s')" --body "$(cat <<'EOF'
 ## Summary
 
 [1-3 bullets]
